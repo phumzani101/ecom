@@ -5,6 +5,8 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 First, run the development server:
 
 ```bash
+MONGODB_URI=mongodb://127.0.0.1:27017/yourdb
+NEXTAUTH_URL=http://localhost:3000
 npm run dev
 # or
 yarn dev
