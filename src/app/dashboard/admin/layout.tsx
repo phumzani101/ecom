@@ -1,17 +1,24 @@
+import Link from "next/link";
+
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <div className="container">
+    <div className="container mt-5">
       <div className="row">
         <div className="col-md-3 col-lg-2">
           <ul className="nav flex-column">
             <li className="nav-item">
-              <a className="nav-link active" aria-current="page" href="#">
-                Active
-              </a>
+              <Link className="nav-link" href="/dashboard/admin">
+                Dashboard
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" href="/dashboard/admin/categories">
+                Categories
+              </Link>
             </li>
             <li className="nav-item">
               <a className="nav-link" href="#">

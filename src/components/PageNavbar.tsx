@@ -10,7 +10,7 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 
 function PageNavbar() {
   const { data, status } = useSession();
-  console.log(data);
+
   return (
     <Navbar expand="lg" bg="light" data-bs-theme="light">
       <Container>
