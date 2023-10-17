@@ -10,6 +10,7 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 
 function PageNavbar() {
   const { data, status } = useSession();
+  console.log(data);
   return (
     <Navbar expand="lg" bg="light" data-bs-theme="light">
       <Container>
@@ -53,17 +54,25 @@ function PageNavbar() {
                   Sign Up
                 </NavDropdown.Item>
               </NavDropdown>
+            ) : status === "loading" ? (
+              <div className="nav-link">Loading...</div>
             ) : (
               <NavDropdown
                 title={`${data?.user?.name}`}
                 id="navbarScrollingDropdown"
                 align="end"
               >
-                <NavDropdown.Item href="/profile" as={Link}>
+                <NavDropdown.Item href="/dashboard/users" as={Link}>
                   Profile
                 </NavDropdown.Item>
 
                 <NavDropdown.Divider />
+                {data?.user?.role! === "admin" && (
+                  <NavDropdown.Item href="/dashboard/admin" as={Link}>
+                    Admin
+                  </NavDropdown.Item>
+                )}
+
                 <NavDropdown.Item
                   href="#!"
                   as={Link}

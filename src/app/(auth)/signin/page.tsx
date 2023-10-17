@@ -2,7 +2,7 @@
 import config from "@/config";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { FormEvent, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -11,6 +11,8 @@ const SignInPage = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -23,7 +25,7 @@ const SignInPage = () => {
         toast.error(result?.error);
       } else {
         toast.success("Welcome back!");
-        router.push("/");
+        router.push(callbackUrl);
       }
     } catch (error: any) {
       toast.error(error.message as string);
@@ -85,6 +87,17 @@ const SignInPage = () => {
           </div>
         </div>
       </form>
+
+      <div className="col-12">
+        <button
+          className="btn btn-block btn-lg btn-light w-100"
+          onClick={() => {
+            signIn("google", { callbackUrl });
+          }}
+        >
+          Sign In with Google
+        </button>
+      </div>
       {/* Text */}
       <div className="text-center mt-8">
         <p>

@@ -1,5 +1,6 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 import mongodbConnect from "@/utils/mongodbConnect";
 import UserModel from "@/models/UserModel";
 import config from "@/config";
@@ -9,6 +10,10 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+    }),
     CredentialsProvider({
       // The name to display on the sign in form (e.g. "Sign in with...")
       name: "Credentials",
@@ -40,6 +45,39 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
+  callbacks: {
+    async signIn({ user }) {
+      await mongodbConnect();
+      const { email, name, image } = user;
+      let dbUser = await UserModel.findOne({ email });
+
+      if (!dbUser) {
+        await UserModel.create({ email, name, image });
+      }
+
+      return true;
+    },
+    jwt: async ({ token, user }) => {
+      await mongodbConnect();
+      const userByEmail = await UserModel.findOne({ email: token?.email });
+      // userByEmail.password = undefined;
+      if (userByEmail) {
+        userByEmail.password = undefined;
+        userByEmail.resetCode = undefined;
+        token.user = userByEmail;
+      }
+
+      return token;
+    },
+    session: async ({ session, token, user }) => {
+      console.log(token?.user!);
+
+      return {
+        ...session,
+        user: token?.user!,
+      };
+    },
+  },
   secret: config.nextauthSecret,
   pages: { signIn: "/signin" },
 };
