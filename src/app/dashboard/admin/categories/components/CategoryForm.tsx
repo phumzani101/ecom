@@ -6,8 +6,8 @@ const CategoryForm = () => {
   const {
     name,
     setName,
-    updatingCategory,
-    setUpdatingCategory,
+    category,
+    setCategory,
     createCategory,
     updateCategory,
     deleteCategory,
@@ -18,17 +18,53 @@ const CategoryForm = () => {
       <form>
         <input
           type="text"
-          value={updatingCategory ? updatingCategory?.name : name}
+          value={category ? category?.name : name}
           onChange={(e) =>
-            updatingCategory
-              ? setUpdatingCategory({
-                  ...updatingCategory,
+            category
+              ? setCategory({
+                  ...category,
                   name: e.target.value,
                 })
               : setName(e.target.value)
           }
           className="form-control p-2 my-2"
         />
+
+        <div className="d-flex justify-content-between">
+          <button
+            className={`btn btn-${category ? "info" : "primary"}`}
+            onClick={(e) => {
+              e.preventDefault();
+              category ? updateCategory() : createCategory();
+            }}
+            type="submit"
+          >
+            {category ? "Edit" : "Create"}
+          </button>
+
+          {category && (
+            <>
+              <button
+                className="btn bg-danger text-light"
+                onClick={(e) => {
+                  e.preventDefault();
+                  deleteCategory();
+                }}
+              >
+                Delete
+              </button>
+              <button
+                className="btn btn-light"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCategory(null);
+                }}
+              >
+                Clear
+              </button>
+            </>
+          )}
+        </div>
       </form>
     </div>
   );

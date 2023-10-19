@@ -7,8 +7,8 @@ import toast from "react-hot-toast";
 
 export type CategoryContextType = {
   name: string;
-  updatingCategory: CategoryType | null;
-  setUpdatingCategory: (value: any) => void;
+  category: CategoryType | null;
+  setCategory: (value: any) => void;
   setName: (value: any) => void;
   categories: CategoryType[];
   createCategory: () => void;
@@ -30,9 +30,7 @@ export const CategoryProvider = ({
   // list categories
   const [categories, setCategories] = useState<CategoryType[]>([]);
   // update and delete
-  const [updatingCategory, setUpdatingCategory] = useState<CategoryType | null>(
-    null
-  );
+  const [category, setCategory] = useState<CategoryType | null>(null);
 
   const getCategory = async () => {
     try {
@@ -87,11 +85,11 @@ export const CategoryProvider = ({
   const updateCategory = async () => {
     try {
       const res = await fetch(
-        `${config.apiUrl}/admin/categories/${updatingCategory?._id}`,
+        `${config.apiUrl}/admin/categories/${category?._id}`,
         {
           method: "PUT",
           headers: { "Content-type": "application/json" },
-          body: JSON.stringify({ name }),
+          body: JSON.stringify(category),
         }
       );
 
@@ -107,11 +105,11 @@ export const CategoryProvider = ({
         toast.success(data.message);
         setCategories(
           categories.map((cat) =>
-            cat._id === updatingCategory?._id ? data.category : cat
+            cat._id === category?._id ? data.category : cat
           )
         );
         setName("");
-        setUpdatingCategory(null);
+        setCategory(null);
       }
     } catch (error) {
       toast.error("An error occurred. Try again");
@@ -121,7 +119,7 @@ export const CategoryProvider = ({
   const deleteCategory = async () => {
     try {
       const res = await fetch(
-        `${config.apiUrl}/admin/categories/${updatingCategory?._id}`,
+        `${config.apiUrl}/admin/categories/${category?._id}`,
         {
           method: "DELETE",
           headers: { "Content-type": "application/json" },
@@ -138,11 +136,9 @@ export const CategoryProvider = ({
         toast.error(data.error);
       } else {
         toast.success(data.message);
-        setCategories(
-          categories.filter((cat) => cat._id !== updatingCategory?._id)
-        );
+        setCategories(categories.filter((cat) => cat._id !== category?._id));
         setName("");
-        setUpdatingCategory(null);
+        setCategory(null);
       }
     } catch (error) {
       toast.error("An error occurred. Try again");
@@ -154,8 +150,8 @@ export const CategoryProvider = ({
       value={{
         name,
         setName,
-        updatingCategory,
-        setUpdatingCategory,
+        category,
+        setCategory,
         categories,
         createCategory,
         getCategory,

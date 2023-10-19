@@ -2,21 +2,27 @@ import mongoose from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
 import { sluggerPlugin } from "mongoose-slugger-plugin";
 
-export interface CategoryType extends mongoose.Document {
+export interface TagType extends mongoose.Document {
   name: string;
   icon: string;
   image: string;
   slug: string;
+  category: mongoose.Schema.Types.ObjectId | string;
 }
 
 // Define your schema as normal.
-var CategorySchema = new mongoose.Schema<CategoryType>(
+var TagSchema = new mongoose.Schema<TagType>(
   {
     name: {
       type: String,
       required: true,
       unique: true,
       trim: true,
+    },
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+      required: true,
     },
     image: String,
     icon: String,
@@ -25,18 +31,15 @@ var CategorySchema = new mongoose.Schema<CategoryType>(
   { timestamps: true }
 );
 
-// Apply the uniqueValidator plugin to CategorySchema.
-CategorySchema.plugin(uniqueValidator, " is already taken");
+// Apply the uniqueValidator plugin to TagSchema.
+TagSchema.plugin(uniqueValidator, " is already taken");
 
 // create a unique index for slug generation;
 // here, the slugs must be unique for each city
-CategorySchema.index(
-  { name: 1, slug: 1 },
-  { name: "category_slug", unique: true }
-);
+TagSchema.index({ name: 1, slug: 1 }, { name: "category_slug", unique: true });
 
 // add the plugin
-CategorySchema.plugin(sluggerPlugin, {
+TagSchema.plugin(sluggerPlugin, {
   // the property path which stores the slug value
   slugPath: "slug",
   // specify the properties which will be used for generating the slug
@@ -47,5 +50,4 @@ CategorySchema.plugin(sluggerPlugin, {
   index: "category_slug",
 });
 
-export default mongoose.models.Category ||
-  mongoose.model<CategoryType>("Category", CategorySchema);
+export default mongoose.models.Tag || mongoose.model<TagType>("Tag", TagSchema);

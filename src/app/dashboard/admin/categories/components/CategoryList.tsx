@@ -1,7 +1,24 @@
-import React from "react";
+"use client";
+import { useCategory } from "@/store/CategoryContext";
+import React, { useCallback, useEffect } from "react";
 
 const CategoryList = () => {
-  return <div className="my-5">CategoryList</div>;
+  const { listCategories, categories, setCategory } = useCategory();
+
+  useEffect(() => {
+    listCategories();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <div className="my-5">
+      {categories?.map((cat) => (
+        <div key={cat._id} className="" onClick={() => setCategory(cat)}>
+          {cat.name}
+        </div>
+      ))}
+    </div>
+  );
 };
 
 export default CategoryList;

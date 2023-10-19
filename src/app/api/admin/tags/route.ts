@@ -1,49 +1,53 @@
-import CategoryModel from "@/models/CategoryModel";
+import TagModel from "@/models/TagModel";
 import mongodbConnect from "@/utils/mongodbConnect";
 import { NextResponse } from "next/server";
 
-// create category POST /api/admin/categories
+// create tag POST /api/admin/tags
 export async function GET(req: Request) {
   // connect to mongodb
   await mongodbConnect();
   // get form data or req body
 
   try {
-    let categories = await CategoryModel.find({}).sort({ createdAt: -1 });
+    let tags = await TagModel.find({}).sort({ createdAt: -1 });
 
     return NextResponse.json({
-      categories,
+      tags,
       message: "Success",
     });
   } catch (error: any) {
-    console.log("CATEGORY_LIST_ERROR", error);
+    console.log("TAG_LIST_ERROR", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
-// create category POST /api/admin/categories
+// create tag POST /api/admin/tags
 export async function POST(req: Request) {
   // connect to mongodb
   await mongodbConnect();
   // get form data or req body
-  const { name, icon } = await req.json();
+  const { name, icon, category } = await req.json();
 
   if (!name) {
+    return NextResponse.json({ error: "Name is required" }, { status: 400 });
+  }
+
+  if (!category) {
     return NextResponse.json(
-      { error: "Category name is required" },
+      { error: "Category is required" },
       { status: 400 }
     );
   }
 
   try {
-    let category = new CategoryModel({ name, icon });
-    category = await category.save();
+    let tag = new TagModel({ name, icon, category });
+    tag = await tag.save();
     return NextResponse.json({
-      category,
+      tag,
       message: "Successfully registered, please sign in",
     });
   } catch (error: any) {
-    console.log("CATEGORY_CREATE_ERROR", error);
+    console.log("TAG_CREATE_ERROR", error);
     return NextResponse.json(
       { error: error?._message ? error?._message : error?.message },
       { status: 500 }

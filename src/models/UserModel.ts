@@ -57,7 +57,7 @@ var UserSchema = new mongoose.Schema<UserType>(
 );
 
 // Apply the uniqueValidator plugin to userSchema.
-UserSchema.plugin(uniqueValidator);
+UserSchema.plugin(uniqueValidator, " is already taken");
 
 UserSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();

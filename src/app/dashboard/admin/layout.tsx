@@ -16,10 +16,21 @@ export default function AdminLayout({
               </Link>
             </li>
             <li className="nav-item">
+              <Link className="nav-link" href="/dashboard/admin/products">
+                Products
+              </Link>
+            </li>
+            <li className="nav-item">
               <Link className="nav-link" href="/dashboard/admin/categories">
                 Categories
               </Link>
             </li>
+            <li className="nav-item">
+              <Link className="nav-link" href="/dashboard/admin/tags">
+                Tags
+              </Link>
+            </li>
+
             <li className="nav-item">
               <a className="nav-link" href="#">
                 Link
